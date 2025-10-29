@@ -49,7 +49,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               confettiController: _confetti,
               blastDirectionality: BlastDirectionality.explosive,
               shouldLoop: false,
-              colors: const [Colors.deepPurple, Colors.purple, Colors.blue, Colors.green, Colors.orange],
+              colors: const [ Color.fromARGB(255, 10, 140, 180), Colors.purple, Colors.blue, Colors.green, Colors.orange],
             ),
           ),
           Center(
@@ -64,7 +64,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                     width: 150,
                     height: 150,
                     decoration: const BoxDecoration(
-                      color: Colors.deepPurple,
+                      color:  Color.fromARGB(255, 10, 140, 180),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(_avatarIcon(widget.avatarIndex), color: Colors.white, size: 80),
@@ -73,7 +73,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   Text(
                     'Welcome, ${widget.userName}!',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color:  Color.fromARGB(255, 10, 140, 180)),
                   ),
                   const SizedBox(height: 12),
                   const Text('Your adventure begins now!', style: TextStyle(fontSize: 18, color: Colors.grey)),
@@ -101,7 +101,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   ElevatedButton(
                     onPressed: () => _confetti.play(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
+                      backgroundColor: const Color.fromARGB(255, 10, 140, 180),
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                     ),

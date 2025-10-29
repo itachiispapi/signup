@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../widgets/progress_tracker.dart';
 import '../widgets/password_strength_meter.dart';
 import '../widgets/avatar_picker.dart';
-import 'success_screen.dart';
+import '../screens/sucess_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -23,13 +23,17 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
   bool _loading = false;
   int? _avatarIndex;
 
-  // Bounce animation on valid input
   late AnimationController _bounce;
 
   @override
   void initState() {
     super.initState();
-    _bounce = AnimationController(vsync: this, duration: const Duration(milliseconds: 180), lowerBound: 0.98, upperBound: 1.02)..value = 1;
+    _bounce = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 180),
+      lowerBound: 0.98,
+      upperBound: 1.02,
+    )..value = 1;
   }
 
   @override
@@ -51,13 +55,12 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
     );
     if (picked != null) {
       setState(() {
-        _dob.text = "${picked.day}/${picked.month}/${picked.year}";
+        _dob.text = "${picked.month}/${picked.day}/${picked.year}";
       });
       HapticFeedback.selectionClick();
     }
   }
 
-  // Units for progress: name, email, dob, password, avatar
   int get _completed {
     int c = 0;
     if (_name.text.trim().isNotEmpty) c++;
@@ -94,13 +97,12 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
       if (!mounted) return;
       setState(() => _loading = false);
 
-      // Achievement logic
       final strongPwd = _password.text.length >= 10 &&
-                        RegExp(r'[A-Z]').hasMatch(_password.text) &&
-                        RegExp(r'[0-9]').hasMatch(_password.text) &&
-                        RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(_password.text);
+          RegExp(r'[A-Z]').hasMatch(_password.text) &&
+          RegExp(r'[0-9]').hasMatch(_password.text) &&
+          RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(_password.text);
 
-      final noon = DateTime.now().hour < 12; // Signed up before noon
+      final noon = DateTime.now().hour < 12;
       final allFilled = _completed == 5;
 
       Navigator.pushReplacement(
@@ -124,8 +126,8 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Your Account '),
-        backgroundColor: Colors.deepPurple,
+        title: const Text('Create Your Account'),
+        backgroundColor: const Color.fromARGB(255, 10, 140, 180),
         elevation: 0,
       ),
       body: Padding(
@@ -136,11 +138,8 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
             onChanged: () => setState(() {}),
             child: Column(
               children: [
-                // Progress
                 ProgressTracker(totalUnits: 5, completedUnits: _completed),
                 const SizedBox(height: 20),
-
-                // Name
                 ScaleTransition(
                   scale: _bounce,
                   child: TextFormField(
@@ -154,8 +153,6 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Email
                 ScaleTransition(
                   scale: _bounce,
                   child: TextFormField(
@@ -164,19 +161,20 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                     validator: (v) {
                       final ok = v != null && v.contains('@') && v.contains('.');
                       _onFieldValidated(ok);
-                      return ok ? null : 'Not a valid email, plese try again';
+                      return ok ? null : 'Not a valid email, please try again';
                     },
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // DOB
                 TextFormField(
                   controller: _dob,
                   readOnly: true,
                   onTap: _pickDate,
                   decoration: _dec('Date of Birth', Icons.calendar_today).copyWith(
-                    suffixIcon: IconButton(icon: const Icon(Icons.date_range), onPressed: _pickDate),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.date_range),
+                      onPressed: _pickDate,
+                    ),
                   ),
                   validator: (v) {
                     final ok = v != null && v.isNotEmpty;
@@ -185,15 +183,16 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Password + meter
                 TextFormField(
                   controller: _password,
                   obscureText: !_showPassword,
                   onChanged: (_) => setState(() {}),
                   decoration: _dec('Secret Password', Icons.lock).copyWith(
                     suffixIcon: IconButton(
-                      icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off, color: Colors.deepPurple),
+                      icon: Icon(
+                        _showPassword ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.deepPurple,
+                      ),
                       onPressed: () => setState(() => _showPassword = !_showPassword),
                     ),
                   ),
@@ -206,11 +205,15 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                 const SizedBox(height: 8),
                 PasswordStrengthMeter(password: _password.text),
                 const SizedBox(height: 20),
-
-                // Avatar selection
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Choose your Avatar', style: TextStyle(color: Colors.deepPurple[800], fontWeight: FontWeight.bold)),
+                  child: Text(
+                    'Choose your Avatar',
+                    style: TextStyle(
+                      color:  const Color.fromARGB(255, 10, 140, 180),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 AvatarPicker(
@@ -218,31 +221,46 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                   onSelected: (i) => setState(() => _avatarIndex = i),
                 ),
                 const SizedBox(height: 30),
-
-                // Submit
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: _loading ? 60 : double.infinity,
-                  height: 56,
-                  child: _loading
-                      ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.deepPurple)))
-                      : ElevatedButton(
-                          onPressed: _submit,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            elevation: 5,
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Start My Adventure', style: TextStyle(fontSize: 18, color: Colors.white)),
-                              SizedBox(width: 10),
-                              Icon(Icons.rocket_launch, color: Colors.white),
-                            ],
-                          ),
-                        ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final targetWidth = _loading ? 60.0 : constraints.maxWidth;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      constraints: BoxConstraints.tightFor(
+                        width: targetWidth,
+                        height: 56,
+                      ),
+                      child: _loading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>( Color.fromARGB(255, 10, 140, 180)),
+                              ),
+                            )
+                          : ElevatedButton(
+                              onPressed: _submit,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color.fromARGB(255, 10, 140, 180),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                elevation: 5,
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Start My Adventure',
+                                    style: TextStyle(fontSize: 18, color: Colors.white),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Icon(Icons.rocket_launch, color: Colors.white),
+                                ],
+                              ),
+                            ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -255,7 +273,7 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
   InputDecoration _dec(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
-      prefixIcon: Icon(icon, color: Colors.deepPurple),
+      prefixIcon: Icon(icon, color: const Color.fromARGB(255, 10, 140, 180)),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       filled: true,
       fillColor: Colors.grey[50],
