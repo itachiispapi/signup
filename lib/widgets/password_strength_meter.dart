@@ -19,7 +19,7 @@ class PasswordStrengthMeter extends StatelessWidget {
     if (score <= 1) return Colors.red;
     if (score == 2) return Colors.orange;
     if (score == 3) return Colors.yellow.shade700;
-    if (score == 4) return Colors.blue;
+    if (score == 4) return const Color.fromARGB(255, 120, 241, 55);
     return Colors.green;
   }
 
